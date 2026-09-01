@@ -325,7 +325,8 @@ export function matchesForLeague(leagueSlug: string, now: Date): MatchSyncPayloa
         awayScore: between(0, 3),
         minute: 90,
       });
-      if (d === 2 && i >= 4) break;    }
+      if (d === 2 && i >= 4) break;
+    }
     // rotate pairs for second day
     teams.push(teams.shift() as TeamInput);
   }
