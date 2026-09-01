@@ -305,7 +305,6 @@ export function matchesForLeague(leagueSlug: string, now: Date): MatchSyncPayloa
   if (!league) return [];
   const teams = teamsByLeague(leagueSlug);
   const matches: MatchSyncPayload[] = [];
-  let n = 0;
   // finished: yesterday & -2d
   for (let d = 1; d <= 2; d++) {
     const day = new Date(now.getTime() - d * 86400_000);
@@ -323,7 +322,6 @@ export function matchesForLeague(leagueSlug: string, now: Date): MatchSyncPayloa
         awayScore: between(0, 3),
         minute: 90,
       });
-      n++;
       if (d === 2 && i >= 4) break;
     }
     // rotate pairs for second day

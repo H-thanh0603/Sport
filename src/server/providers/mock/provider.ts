@@ -9,7 +9,6 @@ import type {
   MatchEventInput,
 } from "../types";
 import {
-  LEAGUES,
   buildCatalog,
   matchesForLeague,
   playersForTeam,

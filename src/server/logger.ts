@@ -10,7 +10,7 @@ function log(level: Level, msg: string, meta?: Record<string, unknown>) {
   );
   if (level === "error") console.error(line);
   else if (level === "warn") console.warn(line);
-  else console.log(line);
+  else console.info(line);
 }
 
 export const logger = {
