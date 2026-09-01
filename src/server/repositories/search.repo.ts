@@ -13,11 +13,16 @@ export const searchRepo = {
       return { teams: [], players: [], leagues: [], news: [], total: 0 };
     }
     const like = `%${trimmed}%`;
+    const words = trimmed.split(/\s+/).slice(0, 4);
+    const prefixWord = `${words[0]}%`;
 
     const teams = (await db.execute(sql`
       SELECT t.id, t.slug, t.name, t.short_name AS "shortName", t.logo_url AS "logoUrl", t.country
       FROM teams t
       WHERE t.name ILIKE ${like}
+         OR t.short_name ILIKE ${like}
+         OR t.name ILIKE ${prefixWord}
+         OR t.name <% ${trimmed}
       ORDER BY similarity(t.name, ${trimmed}) DESC, t.name ASC
       LIMIT ${limit}
     `)) as unknown as TeamSummary[];
@@ -30,7 +35,7 @@ export const searchRepo = {
       FROM players p
       LEFT JOIN teams te ON te.id = p.team_id
       JOIN sports s ON s.id = p.sport_id
-      WHERE p.name ILIKE ${like}
+      WHERE p.name ILIKE ${like} OR p.name <% ${trimmed}
       ORDER BY similarity(p.name, ${trimmed}) DESC, p.name ASC
       LIMIT ${limit}
     `)) as unknown as (Omit<PlayerDetail, "team" | "sport"> & {
@@ -46,7 +51,7 @@ export const searchRepo = {
              s.slug AS "sportSlug", s.name AS "sportName", s.emoji AS "sportEmoji"
       FROM leagues l
       JOIN sports s ON s.id = l.sport_id
-      WHERE l.name ILIKE ${like}
+      WHERE l.name ILIKE ${like} OR l.name <% ${trimmed}
       ORDER BY similarity(l.name, ${trimmed}) DESC, l.name ASC
       LIMIT ${limit}
     `)) as unknown as (Omit<LeagueSummary, "sport"> & {
@@ -65,7 +70,7 @@ export const searchRepo = {
       FROM news n
       JOIN news_categories c ON c.id = n.category_id
       LEFT JOIN users u ON u.id = n.author_id
-      WHERE n.status = 'published' AND n.title ILIKE ${like}
+      WHERE n.status = 'published' AND (n.title ILIKE ${like} OR n.title <% ${trimmed})
       ORDER BY similarity(n.title, ${trimmed}) DESC, n.published_at DESC
       LIMIT ${limit}
     `)) as unknown as (Omit<NewsCard, "category"> & {

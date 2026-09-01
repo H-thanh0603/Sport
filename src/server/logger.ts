@@ -10,6 +10,7 @@ function log(level: Level, msg: string, meta?: Record<string, unknown>) {
   );
   if (level === "error") console.error(line);
   else if (level === "warn") console.warn(line);
+  // eslint-disable-next-line no-console
   else console.log(line);
 }
 

@@ -119,12 +119,18 @@ export const newsRepo = {
     };
   },
 
-  async related(newsId: number, categoryId: number, limit = 4): Promise<NewsCard[]> {
+  async related(newsId: number, limit = 4): Promise<NewsCard[]> {
+    const [self] = await db
+      .select({ categoryId: news.categoryId })
+      .from(news)
+      .where(eq(news.id, newsId))
+      .limit(1);
+    if (!self) return [];
     const rows = await baseNewsQuery()
       .where(
         and(
           publishedCond(),
-          eq(news.categoryId, categoryId),
+          eq(news.categoryId, self.categoryId),
           sql`${news.id} <> ${newsId}`,
         ),
       )

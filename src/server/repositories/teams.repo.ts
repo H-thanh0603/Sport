@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, sql } from "drizzle-orm";
+import { asc, eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { leagues, sports, teamPlayers, teams, venues } from "@/db/schema";
 import type { PlayerDetail, TeamDetail, TeamSummary } from "@/server/services/types";

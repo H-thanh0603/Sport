@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { and, eq, gt, lt, or, isNull } from "drizzle-orm";
+import { and, eq, gt, lt } from "drizzle-orm";
 import { db } from "@/db";
 import { sessions, users } from "@/db/schema";
 import { generateToken, sha256 } from "./tokens";
