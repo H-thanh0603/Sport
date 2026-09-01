@@ -85,7 +85,8 @@ async function seedCatalog(catalog: ProviderCatalog) {
   const seasonRows = await db.select().from(seasons);
   const seasonMap = new Map(seasonRows.map((s) => [s.leagueId, s]));
 
-  // venues + teams
+  // venues + teams — clear stale rows first so re-seeds are deterministic
+  await db.delete(teams).where(sql`true`);
   for (const t of catalog.teams) {
     let venueId: number | null = null;
     if (t.venueName && t.venueName !== "—") {

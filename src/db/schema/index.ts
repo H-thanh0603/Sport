@@ -381,6 +381,7 @@ export const standings = pgTable(
     goalsAgainst: smallint("goals_against").notNull().default(0),
     points: smallint("points").notNull().default(0),
     form: varchar("form", { length: 10 }),
+    previousPosition: smallint("previous_position"),
   },
   (t) => [
     uniqueIndex("standings_season_team_uq").on(t.seasonId, t.teamId),

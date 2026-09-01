@@ -70,11 +70,11 @@ const footballTeams: Array<[string, string, string, number, string, string]> = [
 ];
 
 const leagueTeamMap: Record<string, string[]> = {
-  "premier-league": ["man-united", "liverpool", "man-city", "arsenal", "chelsea", "tottenham", "newcastle", "aston-villa"],
+  "premier-league": ["manchester-united", "liverpool", "manchester-city", "arsenal", "chelsea", "tottenham", "newcastle", "aston-villa"],
   "la-liga": ["real-madrid", "barcelona", "atletico-madrid", "sevilla"],
-  "champions-league": ["real-madrid", "bayern", "psg", "inter", "man-city", "barcelona", "napoli", "man-united"],
-  "serie-a": ["inter", "milan", "juventus", "napoli", "roma", "lazio"],
-  "bundesliga": ["bayern", "dortmund", "leipzig", "leverkusen", "stuttgart"],
+  "champions-league": ["real-madrid", "borussia-dortmund", "paris-saint-germain", "inter-milan", "manchester-city", "barcelona", "napoli", "manchester-united"],
+  "serie-a": ["inter-milan", "ac-milan", "juventus", "napoli", "roma", "lazio"],
+  "bundesliga": ["bayern-munich", "borussia-dortmund", "rb-leipzig", "bayer-leverkusen", "vfb-stuttgart"],
   "v-league": ["ha-noi-fc", "binh-duong", "sai-gon-fc", "song-lam-nghe-an"],
 };
 
@@ -98,13 +98,16 @@ export function slugify(s: string): string {
 }
 export { slugify as slug };
 
+/** canonical lookup: slugified name → team entry */
+const footballByName = new Map(footballTeams.map((t) => [slugify(t[0]), t]));
+
 export function teamsByLeague(leagueSlug: string): TeamInput[] {
   const footballLeague = ["premier-league", "la-liga", "champions-league", "serie-a", "bundesliga", "v-league"].includes(leagueSlug);
   if (footballLeague) {
     const names = leagueTeamMap[leagueSlug] ?? [];
     return names.map((slugName) => {
-      const entry = footballTeams.find(([, , , , venue]) => slugify(venue.split(",")[0] ?? "") === slugName) ??
-        footballTeams.find(([name]) => slugify(name) === slugName) ?? footballTeams[0]!;
+      const entry = footballByName.get(slugName);
+      if (!entry) throw new Error(`catalog: unknown football team slug "${slugName}" for ${leagueSlug}`);
       const [name, shortName, country, foundedYear, venueName, venueCity] = entry;
       return {
         externalId: `team-${slugName}`,
