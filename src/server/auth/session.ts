@@ -78,8 +78,8 @@ export async function destroySession(): Promise<void> {
 /** Housekeeping — call from worker; also guards against expired rows piling up. */
 export async function purgeExpiredSessions(): Promise<number> {
   const res = await db.delete(sessions).where(lt(sessions.expiresAt, new Date()));
-  logger.info("purged expired sessions", { count: res.rowCount ?? 0 });
-  return res.rowCount ?? 0;
+  logger.info("purged expired sessions", { count: res.count });
+  return res.count;
 }
 
 /** For tests/maintenance: invalidate all sessions of a user (e.g. after ban). */

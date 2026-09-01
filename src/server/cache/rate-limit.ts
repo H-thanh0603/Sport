@@ -1,4 +1,4 @@
-import { cache } from "./cache";
+import { cache } from "@/server/cache";
 
 /**
  * Sliding-window rate limiter.
