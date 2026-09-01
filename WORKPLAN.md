@@ -74,7 +74,7 @@ Prefix commit message: `feat(a):`, `feat(b):`... theo gói.
 
 | Gói | Nhánh | Phase | Sở hữu (được ghi) | Phụ thuộc | Trạng thái |
 |---|---|---|---|---|---|
-| **A** Backend Core | `agent/a-backend-core` | 1 | `src/server/repositories/`, `src/server/services/`, `src/server/live/`, `src/server/search/`, `src/server/notify/`, `src/app/api/`, `src/lib/api-client.ts`, `src/lib/format.ts` | — | ⬜ mở |
+| **A** Backend Core | `agent/a-backend-core` | 1 | `src/server/repositories/`, `src/server/services/`, `src/server/live/`, `src/server/search/`, `src/server/notify/`, `src/app/api/`, `src/lib/api-client.ts`, `src/lib/format.ts` | — | 🟢 xong (PR sẵn sàng) |
 | **B** UI Kit + Layout | `agent/b-ui-kit` | 1 | `src/components/ui/`, `src/components/layout/`, `src/components/providers.tsx`, `src/app/globals.css`, `src/app/layout.tsx`, `src/app/(site)/layout.tsx`, `src/app/(auth)/`, `src/app/dev/` | — | ⬜ mở |
 | **C** Home + Matches UI | `agent/c-home-matches` | 2 | `src/app/(site)/page.tsx`, `src/app/(site)/matches/`, `src/app/(site)/schedule/`, `src/app/(site)/results/`, `src/components/matches/`, `src/components/charts/`, `src/components/sports/` | A (API/services), B (ui kit) | ⬜ chờ |
 | **D** Teams/Players/Leagues UI | `agent/d-teams-players-leagues` | 2 | `src/app/(site)/teams/`, `src/app/(site)/players/`, `src/app/(site)/leagues/`, `src/app/(site)/standings/`, `src/components/teams/`, `src/components/players/`, `src/components/leagues/` | A, B | ⬜ chờ |
@@ -351,4 +351,5 @@ main ──┬── agent/a-backend-core ──┐ PR#1 ──► merge A
 
 <!-- Format: [BLOCKED|NOTE] (gói) — ngày — nội dung — plan xử lý -->
 
-(chưa có)
+- [NOTE] (A) — 2026-09-01 — Gói A hoàn thành trên nhánh `agent/a-backend-core` (commits 1921847..13d17a9). Đã verify runtime: 30 API routes build OK, auth flow end-to-end (register → login → me → favorites → comments với email-verify gate), SSE stream phát score deltas mỗi 5s, trigram fuzzy search ("man utd" → Manchester United, dùng `<%` word_similarity), error envelopes chuẩn. Migration mới: `0002_standings_prev_pos` (cột `previous_position` cho movement indicator). Cần merge vào main để C/D/E/F bắt đầu. `notify/` service fanout để Gói F wire với worker (hub đã có topic `user:{id}`).
+- [NOTE] (A) — 2026-09-01 — `src/server/live/engine.ts` tự start khi có client SSE đầu tiên (single instance). Khi có REDIS_URL + worker (Gói F), worker nên gọi `startEngine()` thay vì để web instance chạy — đã có `startEngine()` export.
