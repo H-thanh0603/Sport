@@ -75,7 +75,7 @@ Prefix commit message: `feat(a):`, `feat(b):`... theo gói.
 | Gói | Nhánh | Phase | Sở hữu (được ghi) | Phụ thuộc | Trạng thái |
 |---|---|---|---|---|---|
 | **A** Backend Core | `agent/a-backend-core` | 1 | `src/server/repositories/`, `src/server/services/`, `src/server/live/`, `src/server/search/`, `src/server/notify/`, `src/app/api/`, `src/lib/api-client.ts`, `src/lib/format.ts` | — | ⬜ mở |
-| **B** UI Kit + Layout | `agent/b-ui-kit` | 1 | `src/components/ui/`, `src/components/layout/`, `src/components/providers.tsx`, `src/app/globals.css`, `src/app/layout.tsx`, `src/app/(site)/layout.tsx`, `src/app/(auth)/`, `src/app/dev/` | — | ⬜ mở |
+| **B** UI Kit + Layout | `agent/b-ui-kit` | 1 | `src/components/ui/`, `src/components/layout/`, `src/components/providers.tsx`, `src/app/globals.css`, `src/app/layout.tsx`, `src/app/(site)/layout.tsx`, `src/app/(auth)/`, `src/app/dev/` | — | 🟢 xong |
 | **C** Home + Matches UI | `agent/c-home-matches` | 2 | `src/app/(site)/page.tsx`, `src/app/(site)/matches/`, `src/app/(site)/schedule/`, `src/app/(site)/results/`, `src/components/matches/`, `src/components/charts/`, `src/components/sports/` | A (API/services), B (ui kit) | ⬜ chờ |
 | **D** Teams/Players/Leagues UI | `agent/d-teams-players-leagues` | 2 | `src/app/(site)/teams/`, `src/app/(site)/players/`, `src/app/(site)/leagues/`, `src/app/(site)/standings/`, `src/components/teams/`, `src/components/players/`, `src/components/leagues/` | A, B | ⬜ chờ |
 | **E** News + Search + Favorites | `agent/e-news-search-favorites` | 2 | `src/app/(site)/news/`, `src/app/(site)/profile/`, `src/components/news/`, `src/components/search/`, `src/components/favorites/`, `src/components/notifications/` | A, B | ⬜ chờ |
@@ -351,4 +351,8 @@ main ──┬── agent/a-backend-core ──┐ PR#1 ──► merge A
 
 <!-- Format: [BLOCKED|NOTE] (gói) — ngày — nội dung — plan xử lý -->
 
-(chưa có)
+- [NOTE] (B) — 2026-09-02 — lint baseline main có 4 lỗi + 1 warning trong file của A (`session.ts`: unused imports; `catalog.ts`: biến `n` dead; `provider.ts`: unused import `LEAGUES`; `logger.ts`: `console.log`), chặn `next build` của B. B sửa thuần xóa dead code / đổi `console.log`→`console.info` (không đổi logic) để build qua — A lưu ý khi rebase, không conflict logic.
+- [NOTE] (B) — 2026-09-02 — thiếu `@types/react`, `@types/react-dom` trong devDependencies của main → B thêm (`eslint.config.mjs` cũng ignore `next-env.d.ts` do Next 15.5 triple-slash reference). 
+- [NOTE] (B) — 2026-09-02 — `src/app/(site)/page.tsx` thuộc scope C nhưng route `/` phải compile được — B thêm placeholder tối giản có `TODO(c)`, C ghi đè khi làm.
+- [NOTE] (B) — 2026-09-02 — Header: search box là link `/search` placeholder (TODO(e)); notifications bell là stub badge (TODO(e)); user menu là stub (TODO(e) thay bằng menu thật sau khi có auth). Auth pages gọi `/api/v1/auth/*` trực tiếp bằng fetch — A merge thì hoạt động ngay, chưa merge thì trả lỗi hiển thị gracefully.
+
