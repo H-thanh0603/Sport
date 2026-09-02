@@ -133,9 +133,11 @@ export const notificationsRepo = {
   },
 
   async purgeOlderThan(days: number): Promise<number> {
-    const cutoff = new Date(Date.now() - days * 86400_000);
-    const res = await db.delete(notifications).where(sql`${notifications.createdAt} < ${cutoff}`);
-    return res.count;
+    const res = await db.execute(
+      sql`WITH del AS (DELETE FROM notifications WHERE created_at < now() - (${days} || ' days')::interval RETURNING 1) SELECT count(*) FROM del`,
+    );
+    const rows = res as unknown as { count: number }[];
+    return Number(rows[0]?.count ?? 0);
   },
 };
 
