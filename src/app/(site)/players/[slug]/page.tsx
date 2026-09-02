@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Avatar, Badge, Card, CardContent, CardHeader } from "@/components/ui";
+import { PlayerStatsChart } from "@/components/players/player-stats-chart";
 import { getPlayerBySlug, getPlayerNews, getPlayerStats } from "@/components/leagues/queries";
 import { formatDate, formatRelative } from "@/lib/format";
 
@@ -83,12 +84,21 @@ export default async function PlayerPage({ params }: Params) {
         <Card>
           <CardHeader title="Thống kê (tính từ sự kiện trận đấu)" />
           <CardContent>
-            <ul className="grid grid-cols-3 gap-3 text-center text-sm">
-              <li><div className="text-2xl font-bold text-primary">{stats.matches}</div><div className="text-xs text-muted-foreground">Số trận</div></li>
-              <li><div className="text-2xl font-bold text-primary">{stats.goals}</div><div className="text-xs text-muted-foreground">Bàn thắng</div></li>
-              <li><div className="text-2xl font-bold text-primary">{stats.assists}</div><div className="text-xs text-muted-foreground">Kiến tạo</div></li>
-              <li><div className="text-2xl font-bold text-warning">{stats.yellowCards}</div><div className="text-xs text-muted-foreground">Thẻ vàng</div></li>
-              <li><div className="text-2xl font-bold text-destructive">{stats.redCards}</div><div className="text-xs text-muted-foreground">Thẻ đỏ</div></li>
+            <PlayerStatsChart
+              stats={[
+                { label: "Số trận", value: stats.matches },
+                { label: "Bàn thắng", value: stats.goals },
+                { label: "Kiến tạo", value: stats.assists },
+                { label: "Thẻ vàng", value: stats.yellowCards },
+                { label: "Thẻ đỏ", value: stats.redCards },
+              ]}
+            />
+            <ul className="mt-2 grid grid-cols-5 gap-2 border-t border-border pt-3 text-center text-xs text-muted-foreground">
+              <li><strong className="block text-base text-foreground">{stats.matches}</strong>Trận</li>
+              <li><strong className="block text-base text-foreground">{stats.goals}</strong>Bàn</li>
+              <li><strong className="block text-base text-foreground">{stats.assists}</strong>Kiến tạo</li>
+              <li><strong className="block text-base text-warning">{stats.yellowCards}</strong>Vàng</li>
+              <li><strong className="block text-base text-destructive">{stats.redCards}</strong>Đỏ</li>
             </ul>
           </CardContent>
         </Card>

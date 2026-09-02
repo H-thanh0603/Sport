@@ -60,6 +60,25 @@ export const getPlayerBySlug = (slug: string) => playersService.bySlug(slug);
 export const getPlayerStats = (playerId: number) => playersService.stats(playerId);
 export const getPlayerNews = (playerName: string) => playersService.newsFor(playerName, 3);
 
+/**
+ * Coach của team — không có bảng coaches (schema không có), lấy từ lineup gần nhất
+ * có coach_name trong match_lineups (chú thích WORKPLAN mục 8).
+ * ponytail: khi A thêm bảng coaches + repo, thay bằng teamsService.coach().
+ */
+export async function getTeamCoach(teamId: number): Promise<string | null> {
+  const { db } = await import("@/db");
+  const { sql } = await import("drizzle-orm");
+  const rows = await db.execute<{ coachName: string | null }>(sql`
+    SELECT ml.coach_name AS "coachName"
+    FROM match_lineups ml
+    JOIN matches m ON m.id = ml.match_id
+    WHERE ml.team_id = ${teamId} AND ml.coach_name IS NOT NULL
+    ORDER BY m.start_time DESC
+    LIMIT 1
+  `);
+  return rows[0]?.coachName ?? null;
+}
+
 /** Normalize league flat row từ repo → LeagueSummary nested theo contract. */
 export async function getLeagueBySlug(slug: string): Promise<LeagueSummary | null> {
   const l = await leaguesRepo.bySlug(slug);

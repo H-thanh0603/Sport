@@ -8,6 +8,7 @@ import { SquadTable } from "@/components/teams/squad-table";
 import { TabbedSections } from "@/components/teams/tabbed-sections";
 import {
   getTeamBySlug,
+  getTeamCoach,
   getTeamMatches,
   getTeamNews,
   getTeamSquad,
@@ -33,9 +34,10 @@ export default async function TeamPage({ params }: Params) {
   const team = await getTeamBySlug(slug).catch(() => null);
   if (!team) notFound();
 
-  const [matches, squad, table, stats, teamNews] = await Promise.all([
+  const [matches, squad, coach, table, stats, teamNews] = await Promise.all([
     getTeamMatches(team.id),
     getTeamSquad(team.id),
+    getTeamCoach(team.id),
     team.league ? getTeamStandings(team.league.slug, team.id) : Promise.resolve(null),
     team.league ? getTeamStats(team.league.slug, team.id) : Promise.resolve(null),
     getTeamNews(team.league?.slug ?? null),
@@ -65,6 +67,7 @@ export default async function TeamPage({ params }: Params) {
               ) : null}
               {team.venue ? <span>Sân {team.venue.name}{team.venue.city ? `, ${team.venue.city}` : ""}</span> : null}
               {team.foundedYear ? <span>Thành lập {team.foundedYear}</span> : null}
+              {coach ? <span>HLV {coach}</span> : null}
             </p>
           </div>
         </CardContent>
