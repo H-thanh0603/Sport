@@ -109,3 +109,40 @@ export const getCurrentSeason = (leagueId: number) => leaguesRepo.currentSeason(
 
 export const getPopularLeagues = () => leaguesService.popular();
 export const getAllLeagues = (sportSlug?: string) => leaguesService.list(sportSlug);
+
+export type TopScorer = {
+  playerId: number; slug: string; name: string;
+  teamSlug: string; teamName: string; goals: number;
+};
+
+/** Top ghi bàn của giải — tính từ match_events (ponytail: chuyển sang repo của A khi có). */
+export async function getLeagueTopScorers(leagueId: number): Promise<TopScorer[]> {
+  const { db } = await import("@/db");
+  const { sql } = await import("drizzle-orm");
+  return db.execute<TopScorer>(sql`
+    SELECT p.id AS "playerId", p.slug, p.name, t.slug AS "teamSlug", t.name AS "teamName",
+           COUNT(*)::int AS goals
+    FROM match_events me
+    JOIN players p ON p.id = me.player_id
+    JOIN teams t ON t.id = p.team_id
+    JOIN matches m ON m.id = me.match_id
+    WHERE m.league_id = ${leagueId} AND me.type = 'goal'
+    GROUP BY p.id, p.slug, p.name, t.slug, t.name
+    ORDER BY goals DESC, p.name
+    LIMIT 10
+  `);
+}
+
+/** Bàn thắng mỗi cầu thủ của đội — cột thống kê squad (ponytail: chuyển sang repo của A khi có). */
+export async function getTeamPlayerGoals(teamId: number): Promise<Record<number, number>> {
+  const { db } = await import("@/db");
+  const { sql } = await import("drizzle-orm");
+  const rows = await db.execute<{ playerId: number; goals: number }>(sql`
+    SELECT me.player_id AS "playerId", COUNT(*)::int AS goals
+    FROM match_events me
+    WHERE me.type = 'goal'
+      AND me.player_id IN (SELECT player_id FROM team_players WHERE team_id = ${teamId})
+    GROUP BY me.player_id
+  `);
+  return Object.fromEntries(rows.map((r) => [r.playerId, r.goals]));
+}

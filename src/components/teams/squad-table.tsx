@@ -12,6 +12,7 @@ export type SquadRow = {
   isCaptain: boolean;
   nationality: string | null;
   birthDate: string | null;
+  goals: number;
 };
 
 function ageOf(birthDate: string | null): number | null {
@@ -54,6 +55,9 @@ export function SquadTable({ squad }: { squad: SquadRow[] }) {
                 <span className="hidden shrink-0 text-xs text-muted-foreground sm:block">{p.nationality ?? "—"}</span>
                 <span className="w-10 shrink-0 text-right text-xs text-muted-foreground">
                   {ageOf(p.birthDate) !== null ? `${ageOf(p.birthDate)}t` : "—"}
+                </span>
+                <span className="w-10 shrink-0 text-right font-mono text-xs" title="Bàn thắng">
+                  {p.goals > 0 ? <span className="text-success">⚽ {p.goals}</span> : "—"}
                 </span>
               </li>
             ))}

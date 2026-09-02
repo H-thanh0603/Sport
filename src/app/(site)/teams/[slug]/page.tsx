@@ -11,6 +11,7 @@ import {
   getTeamCoach,
   getTeamMatches,
   getTeamNews,
+  getTeamPlayerGoals,
   getTeamSquad,
   getTeamStandings,
   getTeamStats,
@@ -34,14 +35,16 @@ export default async function TeamPage({ params }: Params) {
   const team = await getTeamBySlug(slug).catch(() => null);
   if (!team) notFound();
 
-  const [matches, squad, coach, table, stats, teamNews] = await Promise.all([
+  const [matches, squad, goalsByPlayer, coach, table, stats, teamNews] = await Promise.all([
     getTeamMatches(team.id),
     getTeamSquad(team.id),
+    getTeamPlayerGoals(team.id),
     getTeamCoach(team.id),
     team.league ? getTeamStandings(team.league.slug, team.id) : Promise.resolve(null),
     team.league ? getTeamStats(team.league.slug, team.id) : Promise.resolve(null),
     getTeamNews(team.league?.slug ?? null),
   ]);
+  const squadWithGoals = squad.map((p) => ({ ...p, goals: goalsByPlayer[p.playerId] ?? 0 }));
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 px-4 py-6">
@@ -141,7 +144,7 @@ export default async function TeamPage({ params }: Params) {
               </CardContent>
             </Card>
           ),
-          squad: <SquadTable squad={squad} />,
+          squad: <SquadTable squad={squadWithGoals} />,
           statistics: (
             <Card>
               <CardHeader title="Thống kê mùa giải" />
