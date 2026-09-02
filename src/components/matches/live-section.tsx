@@ -17,7 +17,7 @@ export function LiveNowSection() {
 
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["matches", "live"],
-    queryFn: () => api.get<MatchWithTeams[]>(`/matches${qs({ status: ["live", "halftime"] })}`),
+    queryFn: () => api.get<MatchWithTeams[]>(`/api/v1/matches${qs({ status: ["live", "halftime"] })}`),
     refetchInterval: 60_000,
   });
 

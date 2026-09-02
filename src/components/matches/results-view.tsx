@@ -16,7 +16,7 @@ export function ResultsView() {
 
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["results", date],
-    queryFn: () => api.get<MatchWithTeams[]>(`/matches${qs({ status: "finished", mode: "results", date, perPage: 100 })}`),
+    queryFn: () => api.get<MatchWithTeams[]>(`/api/v1/matches${qs({ status: "finished", mode: "results", date, perPage: 100 })}`),
   });
 
   const grouped = useMemo(() => {

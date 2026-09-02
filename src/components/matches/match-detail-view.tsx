@@ -19,7 +19,7 @@ export function MatchDetailView({ matchId }: { matchId: number }) {
 
   const { data: match, isPending, isError, refetch } = useQuery({
     queryKey: ["match", matchId],
-    queryFn: () => api.get<MatchDetail>(`/matches/${matchId}`),
+    queryFn: () => api.get<MatchDetail>(`/api/v1/matches/${matchId}`),
   });
 
   // realtime: score/minute/status/events via SSE topic match:{id} — no page reload

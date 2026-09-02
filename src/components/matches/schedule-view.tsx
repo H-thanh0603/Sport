@@ -43,12 +43,12 @@ export function ScheduleView() {
 
   const { data: leagues } = useQuery({
     queryKey: ["leagues", sport || "all"],
-    queryFn: () => api.get<LeagueSummary[]>(`/leagues${qs({ sport })}`),
+    queryFn: () => api.get<LeagueSummary[]>(`/api/v1/leagues${qs({ sport })}`),
   });
 
   const { data: teamOptions } = useQuery({
     queryKey: ["teams", "search", teamQuery],
-    queryFn: () => api.get<{ id: number; name: string }[]>(`/teams${qs({ q: teamQuery, perPage: 8 })}`),
+    queryFn: () => api.get<{ id: number; name: string }[]>(`/api/v1/teams${qs({ q: teamQuery, perPage: 8 })}`),
     enabled: teamQuery.trim().length >= 2,
   });
 

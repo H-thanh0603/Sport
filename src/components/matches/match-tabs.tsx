@@ -59,7 +59,7 @@ function BadgeVar() {
 export function TimelineTab({ matchId }: { matchId: number }) {
   const { data, isPending } = useQuery({
     queryKey: ["match", matchId],
-    queryFn: () => api.get<MatchDetail>(`/matches/${matchId}`),
+    queryFn: () => api.get<MatchDetail>(`/api/v1/matches/${matchId}`),
   });
   if (isPending) return <Skeleton className="h-48 w-full" />;
   if (!data || data.events.length === 0) return <EmptyState title="Chưa có sự kiện trong trận." />;
@@ -192,7 +192,7 @@ export function H2HTab({ h2h }: { h2h: MatchDetail["h2h"] }) {
 export function CommentaryTab({ matchId }: { matchId: number }) {
   const { data, isPending } = useQuery({
     queryKey: ["match", matchId, "commentary"],
-    queryFn: () => api.get<MatchDetail>(`/matches/${matchId}`),
+    queryFn: () => api.get<MatchDetail>(`/api/v1/matches/${matchId}`),
   });
   if (isPending) return <Skeleton className="h-48 w-full" />;
   if (!data || data.commentary.length === 0) return <EmptyState title="Chưa có tường thuật." />;

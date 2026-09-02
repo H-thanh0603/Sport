@@ -64,11 +64,11 @@ export function HeroCarousel() {
   const [slide, setSlide] = useState(0);
   const { data: live } = useQuery({
     queryKey: ["matches", "live"],
-    queryFn: () => api.get<MatchWithTeams[]>(`/matches${qs({ status: ["live", "halftime"] })}`),
+    queryFn: () => api.get<MatchWithTeams[]>(`/api/v1/matches${qs({ status: ["live", "halftime"] })}`),
   });
   const { data: breaking } = useQuery({
     queryKey: ["news", "breaking"],
-    queryFn: () => api.get<NewsCard[]>(`/news${qs({ breaking: "true", perPage: 3 })}`),
+    queryFn: () => api.get<NewsCard[]>(`/api/v1/news${qs({ breaking: "true", perPage: 3 })}`),
   });
 
   const matchSlides = (live ?? []).slice(0, 3);
@@ -138,7 +138,7 @@ export function UpcomingSection() {
   const [win, setWin] = useState<(typeof WINDOWS)[number]["key"]>("today");
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["matches", "upcoming", win],
-    queryFn: () => api.get<MatchWithTeams[]>(`/matches${qs({ status: "scheduled", mode: "upcoming", window: win, perPage: 8 })}`),
+    queryFn: () => api.get<MatchWithTeams[]>(`/api/v1/matches${qs({ status: "scheduled", mode: "upcoming", window: win, perPage: 8 })}`),
   });
 
   return (
@@ -208,7 +208,7 @@ function MatchRowCompact({ match }: { match: MatchWithTeams }) {
 export function TrendingNewsSection() {
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["news", "trending"],
-    queryFn: () => api.get<NewsCard[]>(`/news${qs({ sort: "views", perPage: 5 })}`),
+    queryFn: () => api.get<NewsCard[]>(`/api/v1/news${qs({ sort: "views", perPage: 5 })}`),
   });
   return (
     <Card>
