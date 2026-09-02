@@ -16,7 +16,7 @@ export function ResultsSection() {
     queryKey: ["matches", "results", "latest"],
     queryFn: () =>
       api
-        .get<MatchWithTeams[]>(`/matches${qs({ status: "finished", mode: "results", perPage: 6 })}`),
+        .get<MatchWithTeams[]>(`/api/v1/matches${qs({ status: "finished", mode: "results", perPage: 6 })}`),
   });
   return (
     <Card>
@@ -53,7 +53,7 @@ export function PopularLeaguesSection() {
     queryKey: ["leagues", "popular"],
     queryFn: () =>
       api
-        .get<LeagueSummary[]>("/leagues")
+        .get<LeagueSummary[]>("/api/v1/leagues")
         .then((all) => all.filter((l) => l.isPopular).slice(0, 8)),
   });
   return (

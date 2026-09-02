@@ -56,7 +56,7 @@ export function ScheduleView() {
     queryKey: ["schedule", sport, league, date, statuses.join(","), teamId],
     queryFn: () =>
       api.get<MatchWithTeams[]>(
-        `/matches${qs({
+        `/api/v1/matches${qs({
           sport: sport || undefined,
           league: league || undefined,
           date: date || undefined,
